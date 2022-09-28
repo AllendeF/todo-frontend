@@ -29,6 +29,7 @@
             </div>
           </div>
         </form>
+        
       </nav>
     </div>
 
@@ -51,6 +52,16 @@
                   <p v-if="task.descrip"><strong>Descripcion: </strong> {{ task.descrip }} </p>
                   <p v-if="task.status"><strong>Estado: </strong> {{ task.status }} </p>
                 </div>
+                <nav class = 'level is-mobilde'>
+                  <div class="level-right"> 
+                    <button class = "button is-link" @click.prevent="edit(task)">
+                      Editar
+                    </button>
+                    <button class = "button is-link" @click.prevent="del(task)">
+                      Borrar
+                    </button>
+                  </div>
+                </nav>
               </div>
             </div>
 
@@ -66,6 +77,7 @@
 
 <script>
 import {HTTP} from '@/http'
+import axios from 'axios';
 export default {
      // eslint-disable-next-line
     name: 'Task',
@@ -86,6 +98,19 @@ export default {
         this.searchTask();
     },
     methods: {
+        edit(instance){
+            this.$router.push({name: 'editTask', query: {inst:instance}})
+        },
+        del(instance){
+          axios.delete(`http://localhost:5000/api/tasks/${instance.id}`)
+            .then(()=>{
+                this.searchTask();
+            } )
+            .catch((error) => {
+              console.log(error);
+              this.searchTask();
+            })
+        },
         async searchTask(page){
             this.loading = true;
             this.search.id = this.buscador
